@@ -1,0 +1,23 @@
+import requests
+from getpass import getpass
+
+
+auth_endpoint = "http://localhost:8000/auth/token/"
+username = input("What is your username? \n")
+password = getpass("What is your password? \n")
+
+auth_response = requests.post(auth_endpoint, json={'username': username, 'password': password})
+print(auth_response.json());
+
+if auth_response.status_code == 200:
+    token = auth_response.json()['access']
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    endpoint = "http://localhost:8000/notes/1/"
+
+    response = requests.get(endpoint, headers=headers);
+    print(response.json())
+    # print(response.text)
+    # print(response.status_code)
