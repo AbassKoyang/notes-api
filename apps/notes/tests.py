@@ -40,3 +40,27 @@ class NoteAPITestCase(APITestCase):
         print(response.data)
         self.assertEqual(len(response.data['results']), 1)
         self.assertEqual(response.data['results'][0]['title'], 'A')
+
+    def test_user_cannot_retrieve_other_users_note(self):
+        note = Note.objects.create(title="A", user=self.user2)
+
+        self.client.force_authenticate(user=self.user1)
+        response = self.client.get(f"/notes/{note.id}/")
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_cannot_delete_other_users_note(self):
+        note = Note.objects.create(title="A", user=self.user2)
+
+        self.client.force_authenticate(user=self.user1)
+        response = self.client.delete(f"/notes/{note.id}/delete/")
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_cannot_update_other_users_note(self):
+        note = Note.objects.create(title="A", user=self.user2)
+
+        self.client.force_authenticate(user=self.user1)
+        response = self.client.patch(f"/notes/{note.id}/update/")
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
