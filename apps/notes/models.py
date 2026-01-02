@@ -12,7 +12,7 @@ class NoteManager(models.Manager):
 
     def active(self):
         return self.get_queryset().active()
-        
+
 class Note(models.Model):
     user = models.ForeignKey(User,
     on_delete=models.CASCADE,
@@ -22,6 +22,7 @@ class Note(models.Model):
     content = models.TextField(blank=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    objects = NoteManager()
 
     class Meta:
         ordering = ['-created_at']
